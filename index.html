@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Training Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+    }
+    
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    
+    .header h1 {
+        font-size: 28px;
+        color: #667eea;
+        margin-bottom: 5px;
+    }
+    
+    .header .emoji {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+    
+    .player-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .player-info input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+    
+    .stats-bar {
+        display: flex;
+        justify-content: space-around;
+        background: #f7f9fc;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .stat-box {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #667eea;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+        color: #666;
+        margin-top: 2px;
+    }
+    
+    .day-selector {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+        padding: 5px 0;
+    }
+    
+    .day-btn {
+        flex: 1;
+        min-width: 60px;
+        padding: 12px 8px;
+        border: 2px solid #e0e0e0;
+        background: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .day-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+        transform: scale(1.05);
+    }
+    
+    .day-btn.completed {
+        background: #10b981;
+        color: white;
+        border-color: #10b981;
+    }
+    
+    .day-btn .day-name {
+        display: block;
+        font-size: 14px;
+    }
+    
+    .day-btn .check-mark {
+        font-size: 16px;
+        display: none;
+    }
+    
+    .day-btn.completed .check-mark {
+        display: block;
+    }
+    
+    .training-section {
+        background: #f7f9fc;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .training-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .training-icon {
+        font-size: 28px;
+        margin-right: 10px;
+    }
+    
+    .input-group {
+        margin-bottom: 15px;
+    }
+    
+    .input-label {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+    
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .training-input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    .training-input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .unit {
+        font-size: 14px;
+        color: #666;
+        font-weight: bold;
+    }
+    
+    .save-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-bottom: 15px;
+    }
+    
+    .save-btn:hover {
+        transform: scale(1.02);
+    }
+    
+    .save-btn:active {
+        transform: scale(0.98);
+    }
+    
+    .celebration {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        display: none;
+        animation: slideIn 0.5s;
+    }
+    
+    .celebration.show {
+        display: block;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .celebration-text {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .progress-section {
+        background: #f7f9fc;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .progress-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    
+    .progress-bar {
+        height: 30px;
+        background: #e0e0e0;
+        border-radius: 15px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transition: width 0.5s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .streak-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    
+    .reset-btn {
+        width: 100%;
+        padding: 12px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    
+    .footer {
+        text-align: center;
+        color: #999;
+        font-size: 12px;
+        margin-top: 20px;
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="emoji">⚽</div>
+            <h1>Training Tracker</h1>
+            <p style="color: #666; font-size: 14px;">Level up your skills!</p>
+        </div>
+
+```
+    <div class="player-info">
+        <label style="font-size: 14px; display: block; margin-bottom: 5px;">Your Name</label>
+        <input type="text" id="playerName" placeholder="Enter your name" />
+    </div>
+    
+    <div class="stats-bar">
+        <div class="stat-box">
+            <div class="stat-value" id="daysCompleted">0</div>
+            <div class="stat-label">DAYS THIS WEEK</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="totalMinutes">0</div>
+            <div class="stat-label">TOTAL MINUTES</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="bestStreak">0</div>
+            <div class="stat-label">BEST JUGGLING</div>
+        </div>
+    </div>
+    
+    <div class="celebration" id="celebration">
+        <div class="celebration-text">🔥 AWESOME! 🔥</div>
+        <div>Training logged!</div>
+    </div>
+    
+    <div class="progress-section">
+        <div class="progress-header">Weekly Goal Progress (3-5 days)</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0/5 days</div>
+        </div>
+        <div style="text-align: center;">
+            <span class="streak-badge" id="streakBadge">🎯 0 day streak</span>
+        </div>
+    </div>
+    
+    <div class="day-selector" id="daySelector">
+        <!-- Days will be populated by JavaScript -->
+    </div>
+    
+    <div class="training-section">
+        <div class="training-header">
+            <span class="training-icon">👟</span>
+            <span>Ball Mastery</span>
+        </div>
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input type="number" class="training-input" id="ballMastery" placeholder="0" min="0" />
+                <span class="unit">MINUTES</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="training-section">
+        <div class="training-header">
+            <span class="training-icon">🤹</span>
+            <span>Juggling</span>
+        </div>
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input type="number" class="training-input" id="jugglingMinutes" placeholder="0" min="0" />
+                <span class="unit">MINUTES</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label class="input-label">Highest Streak</label>
+            <div class="input-wrapper">
+                <input type="number" class="training-input" id="jugglingStreak" placeholder="0" min="0" />
+                <span class="unit">TOUCHES</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="training-section">
+        <div class="training-header">
+            <span class="training-icon">🧱</span>
+            <span>Wall Passing</span>
+        </div>
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input type="number" class="training-input" id="wallPassing" placeholder="0" min="0" />
+                <span class="unit">MINUTES</span>
+            </div>
+        </div>
+    </div>
+    
+    <button class="save-btn" id="saveBtn">💪 LOG TODAY'S TRAINING</button>
+    
+    <button class="reset-btn" id="resetBtn">Reset Week (New Week)</button>
+    
+    <div class="footer">
+        Stay consistent! Every rep counts 🚀
+    </div>
+</div>
+
+<script>
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    let currentDay = new Date().getDay();
+    currentDay = currentDay === 0 ? 6 : currentDay - 1;
+    
+    let trainingData = {};
+    
+    function loadData() {
+        const saved = localStorage.getItem('soccerTraining');
+        if (saved) {
+            trainingData = JSON.parse(saved);
+        } else {
+            trainingData = {
+                playerName: '',
+                days: {},
+                weekStart: getMonday(new Date()).toISOString()
+            };
+        }
+        
+        const savedWeekStart = new Date(trainingData.weekStart);
+        const currentWeekStart = getMonday(new Date());
+        
+        if (savedWeekStart.getTime() !== currentWeekStart.getTime()) {
+            if (confirm('New week detected! Reset your training log?')) {
+                resetWeek();
+            }
+        }
+        
+        document.getElementById('playerName').value = trainingData.playerName || '';
+        updateUI();
+    }
+    
+    function getMonday(date) {
+        const d = new Date(date);
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        return new Date(d.setDate(diff));
+    }
+    
+    function saveData() {
+        trainingData.playerName = document.getElementById('playerName').value;
+        localStorage.setItem('soccerTraining', JSON.stringify(trainingData));
+    }
+    
+    function updateUI() {
+        renderDays();
+        updateStats();
+        loadCurrentDay();
+    }
+    
+    function renderDays() {
+        const selector = document.getElementById('daySelector');
+        selector.innerHTML = '';
+        
+        days.forEach((day, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'day-btn';
+            btn.innerHTML = `<span class="day-name">${day}</span><span class="check-mark">✓</span>`;
+            
+            if (index === currentDay) {
+                btn.classList.add('active');
+            }
+            
+            if (trainingData.days[index] && trainingData.days[index].completed) {
+                btn.classList.add('completed');
+            }
+            
+            btn.onclick = () => {
+                currentDay = index;
+                updateUI();
+            };
+            
+            selector.appendChild(btn);
+        });
+    }
+    
+    function loadCurrentDay() {
+        const dayData = trainingData.days[currentDay] || {};
+        document.getElementById('ballMastery').value = dayData.ballMastery || '';
+        document.getElementById('jugglingMinutes').value = dayData.jugglingMinutes || '';
+        document.getElementById('jugglingStreak').value = dayData.jugglingStreak || '';
+        document.getElementById('wallPassing').value = dayData.wallPassing || '';
+    }
+    
+    function updateStats() {
+        let daysCompleted = 0;
+        let totalMinutes = 0;
+        let bestStreak = 0;
+        
+        Object.values(trainingData.days).forEach(day => {
+            if (day.completed) daysCompleted++;
+            totalMinutes += (day.ballMastery || 0) + (day.jugglingMinutes || 0) + (day.wallPassing || 0);
+            if (day.jugglingStreak > bestStreak) bestStreak = day.jugglingStreak;
+        });
+        
+        document.getElementById('daysCompleted').textContent = daysCompleted;
+        document.getElementById('totalMinutes').textContent = totalMinutes;
+        document.getElementById('bestStreak').textContent = bestStreak;
+        
+        const progressPercent = Math.min((daysCompleted / 5) * 100, 100);
+        const progressFill = document.getElementById('progressFill');
+        progressFill.style.width = progressPercent + '%';
+        progressFill.textContent = `${daysCompleted}/5 days`;
+        
+        document.getElementById('streakBadge').textContent = `🎯 ${daysCompleted} day streak`;
+    }
+    
+    document.getElementById('saveBtn').onclick = function() {
+        const ballMastery = parseInt(document.getElementById('ballMastery').value) || 0;
+        const jugglingMinutes = parseInt(document.getElementById('jugglingMinutes').value) || 0;
+        const jugglingStreak = parseInt(document.getElementById('jugglingStreak').value) || 0;
+        const wallPassing = parseInt(document.getElementById('wallPassing').value) || 0;
+        
+        if (ballMastery === 0 && jugglingMinutes === 0 && wallPassing === 0) {
+            alert('Please enter at least one training activity!');
+            return;
+        }
+        
+        trainingData.days[currentDay] = {
+            ballMastery,
+            jugglingMinutes,
+            jugglingStreak,
+            wallPassing,
+            completed: true
+        };
+        
+        saveData();
+        
+        const celebration = document.getElementById('celebration');
+        celebration.classList.add('show');
+        setTimeout(() => {
+            celebration.classList.remove('show');
+        }, 2000);
+        
+        updateUI();
+    };
+    
+    document.getElementById('resetBtn').onclick = function() {
+        if (confirm('Are you sure you want to reset the week? This will clear all your data!')) {
+            resetWeek();
+        }
+    };
+    
+    function resetWeek() {
+        trainingData = {
+            playerName: trainingData.playerName || '',
+            days: {},
+            weekStart: getMonday(new Date()).toISOString()
+        };
+        saveData();
+        updateUI();
+    }
+    
+    document.getElementById('playerName').addEventListener('change', saveData);
+    
+    loadData();
+</script>
+```
+
+</body>
+</html>
